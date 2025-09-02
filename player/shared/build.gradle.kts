@@ -76,4 +76,6 @@ dependencies {
     implementation(libs.material)
     debugImplementation(androidx.compose.ui.test.manifest)
     debugImplementation(androidx.compose.ui.tooling)
+
+    implementation(project(":sponsorblock"))
 }

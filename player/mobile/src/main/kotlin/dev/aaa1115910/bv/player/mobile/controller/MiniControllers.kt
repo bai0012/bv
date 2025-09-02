@@ -26,16 +26,19 @@ import dev.aaa1115910.bv.player.entity.LocalVideoPlayerStateData
 import dev.aaa1115910.bv.player.entity.VideoPlayerSeekData
 import dev.aaa1115910.bv.player.entity.VideoPlayerStateData
 import dev.aaa1115910.bv.player.mobile.VideoSeekBar
+import dev.aaa1115910.bv.sponsorblock.Segment
 import dev.aaa1115910.bv.util.formatHourMinSec
 
 @Composable
 fun MiniControllers(
     modifier: Modifier = Modifier,
+    sponsorBlockSegments: List<Segment> = emptyList(),
     onBack: () -> Unit,
     onPlay: () -> Unit,
     onPause: () -> Unit,
     onEnterFullScreen: () -> Unit,
     onSeekToPosition: (Long) -> Unit,
+    onSkip: () -> Unit
 ) {
     Box(
         modifier = modifier
@@ -51,10 +54,12 @@ fun MiniControllers(
             modifier = Modifier
                 .align(Alignment.BottomCenter)
                 .fillMaxWidth(),
+            sponsorBlockSegments = sponsorBlockSegments,
             onPlay = onPlay,
             onPause = onPause,
             onEnterFullScreen = onEnterFullScreen,
-            onSeekToPosition = onSeekToPosition
+            onSeekToPosition = onSeekToPosition,
+            onSkip = onSkip
         )
     }
 }
@@ -91,10 +96,12 @@ private fun TopControllers(
 @Composable
 private fun BottomControllers(
     modifier: Modifier = Modifier,
+    sponsorBlockSegments: List<Segment> = emptyList(),
     onPlay: () -> Unit,
     onPause: () -> Unit,
     onEnterFullScreen: () -> Unit,
-    onSeekToPosition: (Long) -> Unit
+    onSeekToPosition: (Long) -> Unit,
+    onSkip: () -> Unit
 ) {
     val videoPlayerSeekData = LocalVideoPlayerSeekData.current
     val videoPlayerStateData = LocalVideoPlayerStateData.current
@@ -105,17 +112,24 @@ private fun BottomControllers(
         ConstraintLayout {
             val (playButton, seekSlider, positionText, fullscreenButton) = createRefs()
 
-            PlayPauseButton(
-                modifier = Modifier
-                    .constrainAs(playButton) {
-                        top.linkTo(parent.top)
-                        start.linkTo(parent.start)
-                        bottom.linkTo(parent.bottom)
-                    },
-                isPlaying = videoPlayerStateData.isPlaying,
-                onPlay = onPlay,
-                onPause = onPause
-            )
+            Row(
+                modifier = Modifier.constrainAs(playButton) {
+                    top.linkTo(parent.top)
+                    start.linkTo(parent.start)
+                    bottom.linkTo(parent.bottom)
+                }
+            ) {
+                PlayPauseButton(
+                    isPlaying = videoPlayerStateData.isPlaying,
+                    onPlay = onPlay,
+                    onPause = onPause
+                )
+                if (videoPlayerStateData.showSkipButton) {
+                    TextButton(onClick = onSkip) {
+                        Text(text = "跳过")
+                    }
+                }
+            }
 
             VideoSeekBar(
                 modifier = Modifier.constrainAs(seekSlider) {
@@ -128,6 +142,7 @@ private fun BottomControllers(
                 duration = videoPlayerSeekData.duration,
                 position = videoPlayerSeekData.position,
                 bufferedPercentage = videoPlayerSeekData.bufferedPercentage,
+                sponsorBlockSegments = sponsorBlockSegments,
                 onPositionChange = { newPosition, isPressing ->
                     if (!isPressing) onSeekToPosition(newPosition)
                 }

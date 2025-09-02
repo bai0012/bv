@@ -48,8 +48,11 @@ import dev.aaa1115910.bv.player.entity.VideoPlayerDebugInfoData
 import dev.aaa1115910.bv.player.entity.VideoPlayerSeekData
 import dev.aaa1115910.bv.player.entity.VideoPlayerStateData
 import dev.aaa1115910.bv.player.mobile.controller.BvPlayerController
+import dev.aaa1115910.bv.player.mobile.controller.LocalVideoPlayerSponsorBlockData
 import dev.aaa1115910.bv.util.countDownTimer
 import io.github.oshai.kotlinlogging.KotlinLogging
+import dev.aaa1115910.bv.util.Prefs
+import dev.aaa1115910.bv.util.toast
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
@@ -87,9 +90,11 @@ fun BvPlayer(
     val videoPlayerLoadStateData = LocalVideoPlayerLoadStateData.current
     val videoPlayerLogsData = LocalVideoPlayerLogsData.current
     val videoPlayerVideoInfoData = LocalVideoPlayerVideoInfoData.current
+    val sponsorBlockData = LocalVideoPlayerSponsorBlockData.current
 
     var showLogs by remember { mutableStateOf(false) }
     var showBackToHistory by remember { mutableStateOf(false) }
+    var showSkipButton by remember { mutableStateOf(false) }
     var isPlaying by rememberSaveable { mutableStateOf(false) }
     var isError by remember { mutableStateOf(false) }
     var isBuffering by remember { mutableStateOf(false) }
@@ -268,6 +273,26 @@ fun BvPlayer(
         mDanmakuPlayer = danmakuPlayer
     }
 
+    val context = LocalContext.current
+    LaunchedEffect(currentPosition) {
+        if (!Prefs.sponsorBlockEnabled) return@LaunchedEffect
+
+        val segment = sponsorBlockData.segments.find {
+            currentPosition in (it.segment[0] * 1000).toLong()..(it.segment[1] * 1000).toLong()
+        }
+
+        if (segment != null) {
+            if (Prefs.sponsorBlockAutoSkip && Prefs.sponsorBlockCategories.contains(segment.category)) {
+                videoPlayer.seekTo((segment.segment[1] * 1000).toLong())
+                "已为您跳过 ${segment.category} 片段".toast(context)
+            } else if (Prefs.sponsorBlockShowSkipButton) {
+                showSkipButton = true
+            }
+        } else {
+            showSkipButton = false
+        }
+    }
+
     DisposableEffect(Unit) {
         clockRefreshTimer = countDownTimer(
             millisInFuture = Long.MAX_VALUE,
@@ -303,7 +328,8 @@ fun BvPlayer(
             isBuffering = isBuffering,
             isError = isError,
             exception = exception,
-            showBackToHistory = showBackToHistory
+            showBackToHistory = showBackToHistory,
+            showSkipButton = showSkipButton
         ),
         LocalVideoPlayerDebugInfoData provides VideoPlayerDebugInfoData(
             debugInfo = videoPlayer.debugInfo
@@ -371,6 +397,15 @@ fun BvPlayer(
             onPlayNewVideo = {
                 //if (!Prefs.incognitoMode) sendHeartbeat()
                 onLoadNewVideo(it)
+            },
+            sponsorBlockSegments = sponsorBlockData.segments,
+            onSkip = {
+                val segment = sponsorBlockData.segments.find {
+                    currentPosition in (it.segment[0] * 1000).toLong()..(it.segment[1] * 1000).toLong()
+                }
+                if (segment != null) {
+                    videoPlayer.seekTo((segment.segment[1] * 1000).toLong())
+                }
             }
         ) {
             BvVideoPlayer(

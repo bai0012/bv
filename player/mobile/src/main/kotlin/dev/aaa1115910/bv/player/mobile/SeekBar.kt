@@ -43,6 +43,7 @@ import androidx.compose.ui.unit.dp
 import dev.aaa1115910.bv.player.seekbar.SeekBar
 import dev.aaa1115910.bv.player.seekbar.SeekBarThumb
 import dev.aaa1115910.bv.player.seekbar.SeekMoveState
+import dev.aaa1115910.bv.sponsorblock.Segment
 import dev.aaa1115910.bv.util.formatHourMinSec
 import kotlinx.coroutines.delay
 import kotlin.math.max
@@ -55,6 +56,7 @@ fun VideoSeekBar(
     bufferedPercentage: Int,
     colors: SliderColors = SliderDefaults.colors(),
     thumb: (@Composable (Modifier, SeekMoveState?) -> Unit)? = null,
+    sponsorBlockSegments: List<Segment> = emptyList(),
     onPositionChange: ((position: Long, pressing: Boolean) -> Unit)? = null
 ) {
     val density = LocalDensity.current

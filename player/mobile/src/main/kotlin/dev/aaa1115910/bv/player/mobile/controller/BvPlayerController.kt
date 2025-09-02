@@ -64,6 +64,7 @@ import dev.aaa1115910.bv.player.entity.VideoPlayerSeekData
 import dev.aaa1115910.bv.player.entity.VideoPlayerStateData
 import dev.aaa1115910.bv.player.mobile.MaterialDarkTheme
 import dev.aaa1115910.bv.player.mobile.controller.menu.DanmakuMenu
+import dev.aaa1115910.bv.sponsorblock.Segment
 import dev.aaa1115910.bv.player.mobile.controller.menu.DashMenu
 import dev.aaa1115910.bv.player.mobile.controller.menu.MoreMenu
 import dev.aaa1115910.bv.player.mobile.controller.menu.SpeedMenu
@@ -91,6 +92,7 @@ fun BvPlayerController(
     onDanmakuScaleChange: (Float) -> Unit,
     onDanmakuAreaChange: (Float) -> Unit,
     onPlayNewVideo: (VideoListItem) -> Unit,
+    sponsorBlockSegments: List<Segment> = emptyList(),
     content: @Composable BoxScope.() -> Unit
 ) {
     val context = LocalContext.current
@@ -465,6 +467,7 @@ fun BvPlayerControllerVideoContent(
         if (showBaseUi) {
             if (isFullScreen) {
                 FullscreenControllers(
+                    sponsorBlockSegments = sponsorBlockSegments,
                     onPlay = onPlay,
                     onPause = onPause,
                     onExitFullScreen = onExitFullScreen,
@@ -490,6 +493,7 @@ fun BvPlayerControllerVideoContent(
                 )
             } else {
                 MiniControllers(
+                    sponsorBlockSegments = sponsorBlockSegments,
                     onBack = onBack,
                     onPlay = onPlay,
                     onPause = onPause,

@@ -110,6 +110,8 @@ import dev.aaa1115910.bv.player.entity.VideoPlayerSeekThumbData
 import dev.aaa1115910.bv.player.entity.VideoPlayerVideoInfoData
 import dev.aaa1115910.bv.player.entity.VideoPlayerVideoShotData
 import dev.aaa1115910.bv.player.mobile.BvPlayer
+import dev.aaa1115910.bv.player.mobile.controller.LocalVideoPlayerSponsorBlockData
+import dev.aaa1115910.bv.player.mobile.controller.VideoPlayerSponsorBlockData
 import dev.aaa1115910.bv.util.Prefs
 import dev.aaa1115910.bv.util.fInfo
 import dev.aaa1115910.bv.util.formatPubTimeString
@@ -280,6 +282,9 @@ fun VideoPlayerScreen(
                         LocalVideoPlayerVideoShotData provides VideoPlayerVideoShotData(
                             videoShot = playerViewModel.videoShot,
                         ),
+                        LocalVideoPlayerSponsorBlockData provides VideoPlayerSponsorBlockData(
+                            segments = playerViewModel.sponsorBlockSegments,
+                        )
                     ) {
                         BvPlayer(
                             modifier = if (isVideoFullscreen) Modifier

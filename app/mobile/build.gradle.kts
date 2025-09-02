@@ -68,4 +68,5 @@ java {
 
 dependencies {
     implementation(project(":app:shared"))
+    implementation(project(":sponsorblock"))
 }

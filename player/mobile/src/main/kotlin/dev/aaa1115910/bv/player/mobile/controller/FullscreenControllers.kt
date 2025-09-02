@@ -41,11 +41,13 @@ import dev.aaa1115910.bv.player.entity.VideoPlayerSeekData
 import dev.aaa1115910.bv.player.entity.VideoPlayerStateData
 import dev.aaa1115910.bv.player.mobile.VideoSeekBar
 import dev.aaa1115910.bv.player.mobile.noRippleClickable
+import dev.aaa1115910.bv.sponsorblock.Segment
 import dev.aaa1115910.bv.util.formatHourMinSec
 
 @Composable
 fun FullscreenControllers(
     modifier: Modifier = Modifier,
+    sponsorBlockSegments: List<Segment> = emptyList(),
     onPlay: () -> Unit,
     onPause: () -> Unit,
     onExitFullScreen: () -> Unit,
@@ -55,7 +57,8 @@ fun FullscreenControllers(
     onToggleDanmaku: (Boolean) -> Unit,
     onShowDanmakuController: () -> Unit,
     onShowVideoListController: () -> Unit,
-    onOpenMoreMenu: () -> Unit
+    onOpenMoreMenu: () -> Unit,
+    onSkip: () -> Unit
 ) {
     val context = LocalContext.current
     val videoPlayerSeekData = LocalVideoPlayerSeekData.current
@@ -84,6 +87,7 @@ fun FullscreenControllers(
             currentResolutionName = videoPlayerConfigData.currentResolution.getDisplayName(context),
             enabledDanmaku = videoPlayerConfigData.currentDanmakuEnabled,
             showPartButton = videoPlayerConfigData.availableVideoList.size > 1,
+            sponsorBlockSegments = sponsorBlockSegments,
             onPlay = onPlay,
             onPause = onPause,
             onExitFullScreen = onExitFullScreen,
@@ -92,7 +96,8 @@ fun FullscreenControllers(
             onShowSpeedController = onShowSpeedController,
             onToggleDanmaku = onToggleDanmaku,
             onShowDanmakuController = onShowDanmakuController,
-            onShowVideoListController = onShowVideoListController
+            onShowVideoListController = onShowVideoListController,
+            onSkip = onSkip
         )
     }
 }
@@ -140,6 +145,7 @@ private fun BottomControllers(
     currentResolutionName: String,
     enabledDanmaku: Boolean,
     showPartButton: Boolean,
+    sponsorBlockSegments: List<Segment> = emptyList(),
     onPlay: () -> Unit,
     onPause: () -> Unit,
     onExitFullScreen: () -> Unit,
@@ -148,7 +154,8 @@ private fun BottomControllers(
     onShowSpeedController: () -> Unit,
     onToggleDanmaku: (Boolean) -> Unit,
     onShowDanmakuController: () -> Unit,
-    onShowVideoListController: () -> Unit
+    onShowVideoListController: () -> Unit,
+    onSkip: () -> Unit
 ) {
     Box(
         modifier = modifier
@@ -184,6 +191,7 @@ private fun BottomControllers(
                     duration = totalTime,
                     position = currentTime,
                     bufferedPercentage = bufferedSeekPosition,
+                    sponsorBlockSegments = sponsorBlockSegments,
                     onPositionChange = { newPosition, isPressing ->
                         if (!isPressing) onSeekToPosition(newPosition)
                     }
@@ -214,6 +222,12 @@ private fun BottomControllers(
                             onPlay = onPlay,
                             onPause = onPause
                         )
+                        val videoPlayerStateData = LocalVideoPlayerStateData.current
+                        if (videoPlayerStateData.showSkipButton) {
+                            TextButton(onClick = onSkip) {
+                                Text(text = "跳过")
+                            }
+                        }
                         TextButton(onClick = { onToggleDanmaku(enabledDanmaku) }) {
                             Text(text = "弹幕开关" + if (enabledDanmaku) "✔" else "✖")
                         }

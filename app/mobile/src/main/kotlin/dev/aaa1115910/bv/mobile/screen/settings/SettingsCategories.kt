@@ -59,6 +59,7 @@ fun SettingsCategories(
                 null to {
                     listOf(
                         MobileSettings.Play,
+                        MobileSettings.SponsorBlock,
                         MobileSettings.Advance
                     ).forEach { item ->
                         textPreference(

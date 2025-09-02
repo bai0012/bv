@@ -38,6 +38,8 @@ import dev.aaa1115910.bv.player.entity.Resolution
 import dev.aaa1115910.bv.player.entity.VideoAspectRatio
 import dev.aaa1115910.bv.player.entity.VideoCodec
 import dev.aaa1115910.bv.repository.VideoInfoRepository
+import dev.aaa1115910.bv.sponsorblock.SponsorBlockClient
+import dev.aaa1115910.bv.sponsorblock.Segment
 import dev.aaa1115910.bv.util.Prefs
 import dev.aaa1115910.bv.util.fException
 import dev.aaa1115910.bv.util.fInfo
@@ -59,6 +61,7 @@ import java.net.URI
 class VideoPlayerV3ViewModel(
     private val videoInfoRepository: VideoInfoRepository,
     private val videoPlayRepository: VideoPlayRepository,
+    private val sponsorBlockClient: SponsorBlockClient
 ) : ViewModel() {
     private val logger = KotlinLogging.logger { }
 
@@ -73,6 +76,7 @@ class VideoPlayerV3ViewModel(
     var danmakuData = mutableStateListOf<DanmakuItemData>()
     val danmakuMasks = mutableStateListOf<DanmakuMaskSegment>()
     var videoShot: VideoShot? by mutableStateOf(null)
+    var sponsorBlockSegments = mutableStateListOf<Segment>()
 
     var availableQuality = mutableStateListOf<Resolution>()
     var availableVideoCodec = mutableStateListOf<VideoCodec>()
@@ -168,10 +172,22 @@ class VideoPlayerV3ViewModel(
             updateDanmakuMask()
 
             updateVideoShot()
+            loadSponsorBlockSegments(videoInfoRepository.bvid)
 
             //如果是继续播放下一集，且之前开启了字幕，就会自动加载第一条字幕，主要用于观看番剧时自动加载字幕
             if (continuePlayNext) {
                 if (lastPlayEnabledSubtitle) enableFirstSubtitle()
+            }
+        }
+    }
+
+    private suspend fun loadSponsorBlockSegments(bvid: String) {
+        viewModelScope.launch(Dispatchers.IO) {
+            runCatching {
+                val segments = sponsorBlockClient.getSkipSegments(bvid)
+                sponsorBlockSegments.swapListWithMainContext(segments.first().segments)
+            }.onFailure {
+                logger.fWarn { "Load sponsor block segments failed: ${it.stackTraceToString()}" }
             }
         }
     }

@@ -60,6 +60,7 @@ data class VideoPlayerStateData(
     val isError: Boolean = false,
     val exception: Exception? = null,
     val showBackToHistory: Boolean = false,
+    val showSkipButton: Boolean = false
 )
 
 data class VideoPlayerConfigData(

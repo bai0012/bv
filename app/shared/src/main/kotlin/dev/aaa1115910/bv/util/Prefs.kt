@@ -311,6 +311,47 @@ object Prefs {
     val themeTypeFlow: Flow<ThemeType>
         get() = dsm.getPreferenceFlow(PrefKeys.prefThemeTypeRequest)
             .transform { ordinal -> emit(ThemeType.entries[ordinal]) }
+
+    var sponsorBlockEnabled: Boolean
+        get() = runBlocking {
+            dsm.getPreferenceFlow(PrefKeys.prefSponsorBlockEnabledRequest).first()
+        }
+        set(value) = runBlocking {
+            dsm.editPreference(PrefKeys.prefSponsorBlockEnabledKey, value)
+        }
+
+    var sponsorBlockAutoSkip: Boolean
+        get() = runBlocking {
+            dsm.getPreferenceFlow(PrefKeys.prefSponsorBlockAutoSkipRequest).first()
+        }
+        set(value) = runBlocking {
+            dsm.editPreference(PrefKeys.prefSponsorBlockAutoSkipKey, value)
+        }
+
+    var sponsorBlockShowSkipButton: Boolean
+        get() = runBlocking {
+            dsm.getPreferenceFlow(PrefKeys.prefSponsorBlockShowSkipButtonRequest).first()
+        }
+        set(value) = runBlocking {
+            dsm.editPreference(PrefKeys.prefSponsorBlockShowSkipButtonKey, value)
+        }
+
+    var sponsorBlockCategories: List<String>
+        get() = runBlocking {
+            val categoriesString =
+                dsm.getPreferenceFlow(PrefKeys.prefSponsorBlockCategoriesRequest).first()
+            if (categoriesString == "") {
+                emptyList()
+            } else {
+                categoriesString.split(",")
+            }
+        }
+        set(value) = runBlocking {
+            dsm.editPreference(
+                PrefKeys.prefSponsorBlockCategoriesKey,
+                value.joinToString(",")
+            )
+        }
 }
 
 object PrefKeys {
@@ -356,6 +397,11 @@ object PrefKeys {
     val prefEnableFfmpegAudioRenderer = booleanPreferencesKey("enable_ffmpeg_audio_renderer")
     val prefBlacklistUserKey = booleanPreferencesKey("blacklist_user")
     val prefThemeTypeKey = intPreferencesKey("theme_type")
+
+    val prefSponsorBlockEnabledKey = booleanPreferencesKey("sponsor_block_enabled")
+    val prefSponsorBlockAutoSkipKey = booleanPreferencesKey("sponsor_block_auto_skip")
+    val prefSponsorBlockShowSkipButtonKey = booleanPreferencesKey("sponsor_block_show_skip_button")
+    val prefSponsorBlockCategoriesKey = stringPreferencesKey("sponsor_block_categories")
 
     val prefIsLoginRequest = PreferenceRequest(prefIsLoginKey, false)
     val prefUidRequest = PreferenceRequest(prefUidKey, 0)
@@ -413,4 +459,11 @@ object PrefKeys {
     val prefEnableFfmpegEndererRequest = PreferenceRequest(prefEnableFfmpegAudioRenderer, false)
     val prefBlacklistUserRequest = PreferenceRequest(prefBlacklistUserKey, false)
     val prefThemeTypeRequest = PreferenceRequest(prefThemeTypeKey, ThemeType.Auto.ordinal)
+
+    val prefSponsorBlockEnabledRequest = PreferenceRequest(prefSponsorBlockEnabledKey, true)
+    val prefSponsorBlockAutoSkipRequest = PreferenceRequest(prefSponsorBlockAutoSkipKey, true)
+    val prefSponsorBlockShowSkipButtonRequest =
+        PreferenceRequest(prefSponsorBlockShowSkipButtonKey, true)
+    val prefSponsorBlockCategoriesRequest =
+        PreferenceRequest(prefSponsorBlockCategoriesKey, "sponsor,intro,outro,interaction,selfpromo,music_offtopic")
 }
