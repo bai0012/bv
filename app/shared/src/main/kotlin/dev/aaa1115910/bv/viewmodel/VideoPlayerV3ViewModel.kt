@@ -400,7 +400,7 @@ class VideoPlayerV3ViewModel(
             currentVideoWidth = videoItem?.width ?: 0
             logger.info { "Video url: $videoUrl" }
             logger.info { "Audio url: $audioUrl" }
-            videoPlayer!!.playUrl(videoUrl, audioUrl)
+            videoPlayer!!.playUrl(videoUrl, audioUrl, "av$currentAid", currentCid)
             videoPlayer!!.prepare()
             showBuffering = true
         }

@@ -30,4 +30,6 @@ interface VideoPlayerListener {
     /** 前进 */
     fun onSeekForward(seekForwardIncrementMs: Long)
 
+    /** 显示 Toast */
+    fun onShowToast(message: String) {}
 }

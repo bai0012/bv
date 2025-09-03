@@ -14,7 +14,12 @@ abstract class AbstractVideoPlayer {
     abstract fun setHeader(headers: Map<String, String>)
 
     /** 设置播放地址 */
-    abstract fun playUrl(videoUrl: String? = null, audioUrl: String? = null)
+    abstract fun playUrl(
+        videoUrl: String? = null,
+        audioUrl: String? = null,
+        bvId: String,
+        cid: Long
+    )
 
     /** 准备开始播放 */
     abstract fun prepare()
@@ -66,6 +71,9 @@ abstract class AbstractVideoPlayer {
 
     /** 视频高度 */
     abstract val videoHeight: Int
+
+    /** SponsorBlock a*/
+    abstract val sponsorBlockSegments: List<dev.aaa1115910.bv.sponsorblock.entity.Segment>
 
     /**
      * 绑定VideoView，监听播放异常，完成，开始准备，视频size变化，视频信息等操作

@@ -29,16 +29,6 @@ import dev.aaa1115910.bv.player.BvVideoPlayer
 import dev.aaa1115910.bv.player.VideoPlayerListener
 import dev.aaa1115910.bv.player.entity.Audio
 import dev.aaa1115910.bv.player.entity.DanmakuType
-import dev.aaa1115910.bv.player.entity.LocalVideoPlayerClockData
-import dev.aaa1115910.bv.player.entity.LocalVideoPlayerConfigData
-import dev.aaa1115910.bv.player.entity.LocalVideoPlayerDanmakuMasksData
-import dev.aaa1115910.bv.player.entity.LocalVideoPlayerDebugInfoData
-import dev.aaa1115910.bv.player.entity.LocalVideoPlayerHistoryData
-import dev.aaa1115910.bv.player.entity.LocalVideoPlayerLoadStateData
-import dev.aaa1115910.bv.player.entity.LocalVideoPlayerLogsData
-import dev.aaa1115910.bv.player.entity.LocalVideoPlayerSeekData
-import dev.aaa1115910.bv.player.entity.LocalVideoPlayerStateData
-import dev.aaa1115910.bv.player.entity.LocalVideoPlayerVideoInfoData
 import dev.aaa1115910.bv.player.entity.Resolution
 import dev.aaa1115910.bv.player.entity.VideoAspectRatio
 import dev.aaa1115910.bv.player.entity.VideoCodec
@@ -75,7 +65,8 @@ fun BvPlayer(
     onLoadNextVideo: () -> Unit,
     onLoadNewVideo: (VideoListItem) -> Unit,
     videoPlayer: AbstractVideoPlayer,
-    danmakuPlayer: DanmakuPlayer?
+    danmakuPlayer: DanmakuPlayer?,
+    sponsorBlockSegments: List<dev.aaa1115910.bv.sponsorblock.entity.Segment>
 ) {
     val logger = KotlinLogging.logger("BvPlayer")
     // 直接调用 danmakuPlayer 会始终为 null
@@ -255,6 +246,9 @@ fun BvPlayer(
             mDanmakuPlayer?.seekTo(currentPosition)
         }
 
+        override fun onShowToast(message: String) {
+            Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+        }
     }
 
     LaunchedEffect(Unit) {
@@ -308,6 +302,7 @@ fun BvPlayer(
         LocalVideoPlayerDebugInfoData provides VideoPlayerDebugInfoData(
             debugInfo = videoPlayer.debugInfo
         ),
+        LocalSponsorBlockSegmentsData provides sponsorBlockSegments,
     ) {
         BvPlayerController(
             modifier = modifier,
@@ -371,6 +366,14 @@ fun BvPlayer(
             onPlayNewVideo = {
                 //if (!Prefs.incognitoMode) sendHeartbeat()
                 onLoadNewVideo(it)
+            },
+            onSkip = {
+                val segment = videoPlayer.sponsorBlockSegments.find {
+                    currentPosition >= it.segment[0] * 1000 && currentPosition < it.segment[1] * 1000
+                }
+                segment?.let {
+                    videoPlayer.seekTo((it.segment[1] * 1000).toLong())
+                }
             }
         ) {
             BvVideoPlayer(

@@ -91,6 +91,7 @@ fun BvPlayerController(
     onDanmakuScaleChange: (Float) -> Unit,
     onDanmakuAreaChange: (Float) -> Unit,
     onPlayNewVideo: (VideoListItem) -> Unit,
+    onSkip: () -> Unit,
     content: @Composable BoxScope.() -> Unit
 ) {
     val context = LocalContext.current
@@ -150,7 +151,8 @@ fun BvPlayerController(
                 onOpenResolutionMenu = { openMenu(MenuType.Resolution) },
                 onOpenDanmakuMenu = { openMenu(MenuType.Danmaku) },
                 onOpenListMenu = { openMenu(MenuType.List) },
-                onCloseMenu = { isMenuOpen = false }
+                onCloseMenu = { isMenuOpen = false },
+                onSkip = onSkip
             ) {
                 Box(
                     modifier = Modifier.clip(RoundedCornerShape(0.dp))
@@ -285,6 +287,7 @@ fun BvPlayerControllerVideoContent(
     onOpenDanmakuMenu: () -> Unit,
     onOpenListMenu: () -> Unit,
     onCloseMenu: () -> Unit,
+    onSkip: () -> Unit,
     content: @Composable BoxScope.() -> Unit
 ) {
     val context = LocalContext.current
@@ -460,6 +463,26 @@ fun BvPlayerControllerVideoContent(
                         }
                     )
             ) {}
+        }
+
+        val segments = LocalSponsorBlockSegmentsData.current
+        val showSkipButton = remember(segments, currentTime) {
+            segments.any {
+                currentTime >= it.segment[0] * 1000 && currentTime < it.segment[1] * 1000 &&
+                        Prefs.sponsorBlockShowSkipButton &&
+                        Prefs.sponsorBlockCategories.contains(it.category)
+            }
+        }
+
+        if (showSkipButton) {
+            Box(
+                modifier = Modifier.fillMaxSize(),
+                contentAlignment = Alignment.BottomEnd
+            ) {
+                SkipButton(
+                    onClick = onSkip
+                )
+            }
         }
 
         if (showBaseUi) {

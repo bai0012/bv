@@ -322,6 +322,10 @@ fun BvPlayer(
         override fun onSeekForward(seekForwardIncrementMs: Long) {
             mDanmakuPlayer?.seekTo(currentPosition)
         }
+
+        override fun onShowToast(message: String) {
+            Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+        }
     }
 
     LaunchedEffect(Unit) {

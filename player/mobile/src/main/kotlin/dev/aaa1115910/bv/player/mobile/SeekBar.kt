@@ -114,6 +114,16 @@ fun VideoSeekBar(
         contentAlignment = Alignment.Center
     ) {
         sliderWidth = this.maxWidth
+
+        val segments = LocalSponsorBlockSegmentsData.current
+        if (segments.isNotEmpty()) {
+            Segments(
+                modifier = Modifier.padding(horizontal = 16.dp),
+                segments = segments,
+                duration = duration
+            )
+        }
+
         SeekBar(
             modifier = Modifier.padding(horizontal = 16.dp),
             duration = duration,
