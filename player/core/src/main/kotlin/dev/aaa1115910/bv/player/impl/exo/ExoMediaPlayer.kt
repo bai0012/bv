@@ -111,7 +111,11 @@ class ExoMediaPlayer(
         if (!sponsorBlockSettings.enabled) return
         scope.launch {
             runCatching {
-                segments = sponsorBlockClient.getSkipSegments(currentBvId, currentCid.toString())
+                segments = sponsorBlockClient.getSkipSegments(
+                    currentBvId,
+                    currentCid.toString(),
+                    sponsorBlockSettings
+                )
             }
         }
     }

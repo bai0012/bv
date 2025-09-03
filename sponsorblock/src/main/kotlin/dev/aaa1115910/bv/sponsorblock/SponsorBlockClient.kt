@@ -7,11 +7,8 @@ import io.ktor.client.engine.cio.CIO
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.request.get
 import dev.aaa1115910.bv.sponsorblock.entity.SponsorBlockSettings
-import dev.aaa1115910.bv.util.Prefs
 import io.ktor.client.request.parameter
 import io.ktor.serialization.kotlinx.json.json
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
 import kotlinx.serialization.json.Json
 
 class SponsorBlockClient {
@@ -23,22 +20,16 @@ class SponsorBlockClient {
         }
     }
 
-    suspend fun getSkipSegments(bvId: String, cid: String): List<Segment> {
+    suspend fun getSkipSegments(
+        bvId: String,
+        cid: String,
+        sponsorBlockSettings: SponsorBlockSettings
+    ): List<Segment> {
+        if (!sponsorBlockSettings.enabled) return emptyList()
         return client.get("https://bsbsb.top/api/skipSegments") {
             parameter("videoID", bvId)
             parameter("cid", cid)
+            parameter("categories", sponsorBlockSettings.categories.joinToString(","))
         }.body()
-    }
-
-    suspend fun getSponsorBlockSettings(): SponsorBlockSettings {
-        return withContext(Dispatchers.IO) {
-            SponsorBlockSettings(
-                enabled = Prefs.sponsorBlockEnabled,
-                autoSkip = Prefs.sponsorBlockAutoSkip,
-                showSkipButton = Prefs.sponsorBlockShowSkipButton,
-                showToast = Prefs.sponsorBlockSkippedToast,
-                categories = Prefs.sponsorBlockCategories
-            )
-        }
     }
 }

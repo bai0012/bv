@@ -57,7 +57,6 @@ java {
 
 dependencies {
     implementation(project(":sponsorblock"))
-    implementation(project(":utils"))
     implementation(androidx.activity.compose)
     implementation(androidx.compose.material)
     implementation(androidx.compose.tv.foundation)
