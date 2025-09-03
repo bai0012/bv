@@ -215,14 +215,6 @@ fun VideoPlayerV3Screen(
                 Prefs.defaultSubtitleBottomPadding = padding
                 playerViewModel.currentSubtitleBottomPadding = padding
             },
-            onSkip = {
-                val segment = playerViewModel.videoPlayer!!.sponsorBlockSegments.find {
-                    playerViewModel.videoPlayer!!.currentPosition >= it.segment[0] * 1000 && playerViewModel.videoPlayer!!.currentPosition < it.segment[1] * 1000
-                }
-                segment?.let {
-                    playerViewModel.videoPlayer!!.seekTo((it.segment[1] * 1000).toLong())
-                }
-            }
         )
     }
 }

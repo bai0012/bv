@@ -133,8 +133,13 @@ class VideoPlayerV3ViewModel(
 
     private fun loadSponsorBlockSettings() {
         viewModelScope.launch {
-            sponsorBlockSettings = dev.aaa1115910.bv.sponsorblock.SponsorBlockClient()
-                .getSponsorBlockSettings()
+            sponsorBlockSettings = dev.aaa1115910.bv.sponsorblock.entity.SponsorBlockSettings(
+                enabled = Prefs.sponsorBlockEnabled,
+                autoSkip = Prefs.sponsorBlockAutoSkip,
+                showSkipButton = Prefs.sponsorBlockShowSkipButton,
+                showToast = Prefs.sponsorBlockSkippedToast,
+                categories = Prefs.sponsorBlockCategories
+            )
         }
     }
 

@@ -76,7 +76,7 @@ fun BvPlayer(
     onLoadNewVideo: (VideoListItem) -> Unit,
     videoPlayer: AbstractVideoPlayer,
     danmakuPlayer: DanmakuPlayer?,
-    sponsorBlockSegments: List<dev.aaa1115910.bv.sponsorblock.entity.Segment>
+    onSkip: () -> Unit
 ) {
     val logger = KotlinLogging.logger("BvPlayer")
     // 直接调用 danmakuPlayer 会始终为 null
@@ -312,7 +312,6 @@ fun BvPlayer(
         LocalVideoPlayerDebugInfoData provides VideoPlayerDebugInfoData(
             debugInfo = videoPlayer.debugInfo
         ),
-        LocalSponsorBlockSegmentsData provides sponsorBlockSegments,
     ) {
         BvPlayerController(
             modifier = modifier,
@@ -377,14 +376,7 @@ fun BvPlayer(
                 //if (!Prefs.incognitoMode) sendHeartbeat()
                 onLoadNewVideo(it)
             },
-            onSkip = {
-                val segment = videoPlayer.sponsorBlockSegments.find {
-                    currentPosition >= it.segment[0] * 1000 && currentPosition < it.segment[1] * 1000
-                }
-                segment?.let {
-                    videoPlayer.seekTo((it.segment[1] * 1000).toLong())
-                }
-            }
+            onSkip = onSkip
         ) {
             BvVideoPlayer(
                 modifier = Modifier

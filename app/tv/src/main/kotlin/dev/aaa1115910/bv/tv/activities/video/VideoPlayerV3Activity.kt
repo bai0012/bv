@@ -64,6 +64,9 @@ class VideoPlayerV3Activity : ComponentActivity() {
 
     private val playerViewModel: VideoPlayerV3ViewModel by viewModel()
 
+import androidx.lifecycle.lifecycleScope
+import kotlinx.coroutines.launch
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         lifecycleScope.launch {

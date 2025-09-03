@@ -23,8 +23,8 @@ import dev.aaa1115910.bv.sponsorblock.entity.SponsorBlockSettings
 import dev.aaa1115910.bv.util.formatHourMinSec
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 @OptIn(UnstableApi::class)
 class ExoMediaPlayer(
