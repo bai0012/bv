@@ -106,7 +106,6 @@ fun VideoPlayerV3Screen(
             modifier = modifier.fillMaxSize(),
             videoPlayer = playerViewModel.videoPlayer!!,
             danmakuPlayer = playerViewModel.danmakuPlayer,
-            sponsorBlockSegments = playerViewModel.videoPlayer!!.sponsorBlockSegments,
             onSendHeartbeat = playerViewModel::uploadHistory,
             onClearBackToHistoryData = { playerViewModel.lastPlayed = 0 },
             onLoadNextVideo = {

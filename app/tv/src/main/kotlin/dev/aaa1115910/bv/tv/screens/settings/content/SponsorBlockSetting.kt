@@ -1,0 +1,68 @@
+package dev.aaa1115910.bv.tv.screens.settings.content
+
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
+import dev.aaa1115910.bv.tv.component.settings.SettingsMenuListItem
+import dev.aaa1115910.bv.util.Prefs
+
+@Composable
+fun SponsorBlockSetting(
+    modifier: Modifier = Modifier
+) {
+    var sponsorBlockEnabled by remember { mutableStateOf(Prefs.sponsorBlockEnabled) }
+    var sponsorBlockAutoSkip by remember { mutableStateOf(Prefs.sponsorBlockAutoSkip) }
+    var sponsorBlockShowSkipButton by remember { mutableStateOf(Prefs.sponsorBlockShowSkipButton) }
+    var sponsorBlockSkippedToast by remember { mutableStateOf(Prefs.sponsorBlockSkippedToast) }
+
+    Column(
+        modifier = modifier,
+        verticalArrangement = Arrangement.spacedBy(12.dp)
+    ) {
+        SettingsMenuListItem(
+            text = "启用 SponsorBlock",
+            supportSwitch = true,
+            checked = sponsorBlockEnabled,
+            onCheckedChange = {
+                Prefs.sponsorBlockEnabled = it
+                sponsorBlockEnabled = it
+            }
+        )
+        SettingsMenuListItem(
+            text = "自动跳过",
+            supportSwitch = true,
+            checked = sponsorBlockAutoSkip,
+            onCheckedChange = {
+                Prefs.sponsorBlockAutoSkip = it
+                sponsorBlockAutoSkip = it
+            },
+            enabled = sponsorBlockEnabled
+        )
+        SettingsMenuListItem(
+            text = "显示跳过按钮",
+            supportSwitch = true,
+            checked = sponsorBlockShowSkipButton,
+            onCheckedChange = {
+                Prefs.sponsorBlockShowSkipButton = it
+                sponsorBlockShowSkipButton = it
+            },
+            enabled = sponsorBlockEnabled
+        )
+        SettingsMenuListItem(
+            text = "显示已跳过消息",
+            supportSwitch = true,
+            checked = sponsorBlockSkippedToast,
+            onCheckedChange = {
+                Prefs.sponsorBlockSkippedToast = it
+                sponsorBlockSkippedToast = it
+            },
+            enabled = sponsorBlockEnabled
+        )
+    }
+}

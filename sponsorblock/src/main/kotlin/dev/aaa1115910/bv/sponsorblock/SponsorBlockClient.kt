@@ -1,12 +1,12 @@
 package dev.aaa1115910.bv.sponsorblock
 
 import dev.aaa1115910.bv.sponsorblock.entity.Segment
+import dev.aaa1115910.bv.sponsorblock.entity.SponsorBlockSettings
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.engine.cio.CIO
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.request.get
-import dev.aaa1115910.bv.sponsorblock.entity.SponsorBlockSettings
 import io.ktor.client.request.parameter
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.json.Json

@@ -19,13 +19,12 @@ import dev.aaa1115910.bv.player.OkHttpUtil
 import dev.aaa1115910.bv.player.VideoPlayerOptions
 import dev.aaa1115910.bv.sponsorblock.SponsorBlockClient
 import dev.aaa1115910.bv.sponsorblock.entity.Segment
-import dev.aaa1115910.bv.util.Prefs
+import dev.aaa1115910.bv.sponsorblock.entity.SponsorBlockSettings
 import dev.aaa1115910.bv.util.formatHourMinSec
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-
-import dev.aaa1115910.bv.sponsorblock.entity.SponsorBlockSettings
+import kotlinx.coroutines.delay
 
 @OptIn(UnstableApi::class)
 class ExoMediaPlayer(
@@ -173,10 +172,6 @@ class ExoMediaPlayer(
         get() = 0L
 
     override fun onPlaybackStateChanged(playbackState: Int) {
-        if (playbackState == Player.STATE_READY && mPlayer?.isPlaying == true) {
-            checkSponsorBlock()
-        }
-
         when (playbackState) {
             Player.STATE_IDLE -> mPlayerEventListener?.onIdle()
             Player.STATE_BUFFERING -> mPlayerEventListener?.onBuffering()

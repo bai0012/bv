@@ -41,6 +41,16 @@ import dev.aaa1115910.bv.player.BvVideoPlayer
 import dev.aaa1115910.bv.player.VideoPlayerListener
 import dev.aaa1115910.bv.player.entity.Audio
 import dev.aaa1115910.bv.player.entity.DanmakuType
+import dev.aaa1115910.bv.player.entity.LocalVideoPlayerClockData
+import dev.aaa1115910.bv.player.entity.LocalVideoPlayerConfigData
+import dev.aaa1115910.bv.player.entity.LocalVideoPlayerDanmakuMasksData
+import dev.aaa1115910.bv.player.entity.LocalVideoPlayerDebugInfoData
+import dev.aaa1115910.bv.player.entity.LocalVideoPlayerHistoryData
+import dev.aaa1115910.bv.player.entity.LocalVideoPlayerLoadStateData
+import dev.aaa1115910.bv.player.entity.LocalVideoPlayerLogsData
+import dev.aaa1115910.bv.player.entity.LocalVideoPlayerSeekData
+import dev.aaa1115910.bv.player.entity.LocalVideoPlayerStateData
+import dev.aaa1115910.bv.player.entity.LocalVideoPlayerVideoInfoData
 import dev.aaa1115910.bv.player.entity.RequestState
 import dev.aaa1115910.bv.player.entity.Resolution
 import dev.aaa1115910.bv.player.entity.VideoAspectRatio
@@ -89,7 +99,6 @@ fun BvPlayer(
     onSubtitleSizeChange: (TextUnit) -> Unit,
     onSubtitleBackgroundOpacityChange: (Float) -> Unit,
     onSubtitleBottomPadding: (Dp) -> Unit,
-    sponsorBlockSegments: List<dev.aaa1115910.bv.sponsorblock.entity.Segment>,
     onSkip: () -> Unit
 ) {
     val scope = rememberCoroutineScope()
@@ -495,7 +504,6 @@ fun BvPlayer(
         LocalVideoPlayerDebugInfoData provides VideoPlayerDebugInfoData(
             debugInfo = videoPlayer.debugInfo
         ),
-        LocalSponsorBlockSegmentsData provides sponsorBlockSegments
     ) {
         VideoPlayerController(
             modifier = modifier

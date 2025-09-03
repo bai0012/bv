@@ -125,7 +125,7 @@ class VideoPlayerV3ViewModel(
     var currentCid by mutableLongStateOf(0L)
     private var currentEpid = 0
 
-    private lateinit var sponsorBlockSettings: dev.aaa1115910.bv.sponsorblock.entity.SponsorBlockSettings
+    lateinit var sponsorBlockSettings: dev.aaa1115910.bv.sponsorblock.entity.SponsorBlockSettings
 
     init {
         loadSponsorBlockSettings()
@@ -133,7 +133,8 @@ class VideoPlayerV3ViewModel(
 
     private fun loadSponsorBlockSettings() {
         viewModelScope.launch {
-            sponsorBlockSettings = dev.aaa1115910.bv.sponsorblock.SponsorBlockClient().getSponsorBlockSettings()
+            sponsorBlockSettings = dev.aaa1115910.bv.sponsorblock.SponsorBlockClient()
+                .getSponsorBlockSettings()
         }
     }
 
@@ -412,7 +413,7 @@ class VideoPlayerV3ViewModel(
             currentVideoWidth = videoItem?.width ?: 0
             logger.info { "Video url: $videoUrl" }
             logger.info { "Audio url: $audioUrl" }
-            videoPlayer!!.playUrl(videoUrl, audioUrl, "av$currentAid", currentCid)
+            videoPlayer!!.playUrl(videoUrl, audioUrl)
             videoPlayer!!.prepare()
             showBuffering = true
         }

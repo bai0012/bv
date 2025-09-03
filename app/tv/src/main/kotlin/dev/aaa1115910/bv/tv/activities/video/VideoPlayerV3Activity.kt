@@ -67,8 +67,7 @@ class VideoPlayerV3Activity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         lifecycleScope.launch {
-            val sponsorBlockSettings =
-                dev.aaa1115910.bv.sponsorblock.SponsorBlockClient().getSponsorBlockSettings()
+            val sponsorBlockSettings = playerViewModel.sponsorBlockSettings
             initVideoPlayer(sponsorBlockSettings)
         }
         //initDanmakuPlayer()

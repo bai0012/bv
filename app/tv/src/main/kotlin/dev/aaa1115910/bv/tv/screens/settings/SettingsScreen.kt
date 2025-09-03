@@ -164,6 +164,7 @@ enum class SettingsMenuNavItem(private val strRes: Int) {
     Resolution(R.string.settings_item_resolution),
     VideoCodec(R.string.settings_item_codec),
     Audio(R.string.settings_item_audio),
+    SponsorBlock(R.string.settings_item_sponsor_block),
     PlayerType(R.string.settings_item_player_type),
     UI(R.string.settings_item_ui),
     Api(R.string.settings_item_api),
@@ -194,6 +195,7 @@ fun SettingContent(
         ) {
             when (currentMenu) {
                 SettingsMenuNavItem.Resolution -> ResolutionSetting()
+                SettingsMenuNavItem.SponsorBlock -> SponsorBlockSetting()
                 SettingsMenuNavItem.Info -> InfoSetting()
                 SettingsMenuNavItem.About -> AboutSetting()
                 SettingsMenuNavItem.VideoCodec -> VideoCodecSetting()
