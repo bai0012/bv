@@ -65,6 +65,15 @@ private fun VideoSeekBar(
     ) {
         val width = this.maxWidth
 
+        val segments = LocalSponsorBlockSegmentsData.current
+        if (segments.isNotEmpty()) {
+            Segments(
+                modifier = Modifier.padding(horizontal = 16.dp),
+                segments = segments,
+                duration = duration
+            )
+        }
+
         ConstraintLayout(
             modifier = Modifier.fillMaxWidth()
         ) {

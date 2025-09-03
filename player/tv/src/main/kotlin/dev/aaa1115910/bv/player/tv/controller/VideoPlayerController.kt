@@ -78,6 +78,7 @@ fun VideoPlayerController(
     onSubtitleSizeChange: (TextUnit) -> Unit,
     onSubtitleBackgroundOpacityChange: (Float) -> Unit,
     onSubtitleBottomPadding: (Dp) -> Unit,
+    onSkip: () -> Unit,
 
     onRequestFocus: () -> Unit,
     content: @Composable BoxScope.() -> Unit
@@ -360,6 +361,29 @@ fun VideoPlayerController(
             onSubtitleBackgroundOpacityChange = onSubtitleBackgroundOpacityChange,
             onSubtitleBottomPadding = onSubtitleBottomPadding
         )
+
+        val segments = LocalSponsorBlockSegmentsData.current
+        val showSkipButton = remember(segments, videoPlayerSeekData.position) {
+            segments.any {
+                videoPlayerSeekData.position >= it.segment[0] * 1000 && videoPlayerSeekData.position < it.segment[1] * 1000 &&
+                        Prefs.sponsorBlockShowSkipButton &&
+                        Prefs.sponsorBlockCategories.contains(it.category)
+            }
+        }
+
+        if (showSkipButton) {
+            Box(
+                modifier = Modifier
+                    .align(Alignment.BottomEnd)
+                    .padding(16.dp)
+            ) {
+                Button(
+                    onClick = onSkip
+                ) {
+                    Text(text = "跳过")
+                }
+            }
+        }
     }
 }
 

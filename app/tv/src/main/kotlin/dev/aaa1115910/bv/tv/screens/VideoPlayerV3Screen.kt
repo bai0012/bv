@@ -106,6 +106,7 @@ fun VideoPlayerV3Screen(
             modifier = modifier.fillMaxSize(),
             videoPlayer = playerViewModel.videoPlayer!!,
             danmakuPlayer = playerViewModel.danmakuPlayer,
+            sponsorBlockSegments = playerViewModel.videoPlayer!!.sponsorBlockSegments,
             onSendHeartbeat = playerViewModel::uploadHistory,
             onClearBackToHistoryData = { playerViewModel.lastPlayed = 0 },
             onLoadNextVideo = {
@@ -215,6 +216,14 @@ fun VideoPlayerV3Screen(
                 Prefs.defaultSubtitleBottomPadding = padding
                 playerViewModel.currentSubtitleBottomPadding = padding
             },
+            onSkip = {
+                val segment = playerViewModel.videoPlayer!!.sponsorBlockSegments.find {
+                    playerViewModel.videoPlayer!!.currentPosition >= it.segment[0] * 1000 && playerViewModel.videoPlayer!!.currentPosition < it.segment[1] * 1000
+                }
+                segment?.let {
+                    playerViewModel.videoPlayer!!.seekTo((it.segment[1] * 1000).toLong())
+                }
+            }
         )
     }
 }

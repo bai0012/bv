@@ -125,6 +125,18 @@ class VideoPlayerV3ViewModel(
     var currentCid by mutableLongStateOf(0L)
     private var currentEpid = 0
 
+    private lateinit var sponsorBlockSettings: dev.aaa1115910.bv.sponsorblock.entity.SponsorBlockSettings
+
+    init {
+        loadSponsorBlockSettings()
+    }
+
+    private fun loadSponsorBlockSettings() {
+        viewModelScope.launch {
+            sponsorBlockSettings = dev.aaa1115910.bv.sponsorblock.SponsorBlockClient().getSponsorBlockSettings()
+        }
+    }
+
     private suspend fun releaseDanmakuPlayer() = withContext(Dispatchers.Main) {
         danmakuPlayer?.release()
     }

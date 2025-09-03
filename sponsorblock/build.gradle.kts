@@ -3,7 +3,6 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 plugins {
     id("com.android.library")
     kotlin("android")
-    kotlin("plugin.serialization") version "1.8.10"
 }
 
 android {

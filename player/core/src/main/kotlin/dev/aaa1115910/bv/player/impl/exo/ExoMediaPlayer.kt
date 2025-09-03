@@ -25,10 +25,13 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
+import dev.aaa1115910.bv.sponsorblock.entity.SponsorBlockSettings
+
 @OptIn(UnstableApi::class)
 class ExoMediaPlayer(
     private val context: Context,
-    private val options: VideoPlayerOptions
+    private val options: VideoPlayerOptions,
+    private val sponsorBlockSettings: SponsorBlockSettings
 ) : AbstractVideoPlayer(), Player.Listener {
     var mPlayer: ExoPlayer? = null
     protected var mMediaSource: MediaSource? = null
@@ -105,7 +108,7 @@ class ExoMediaPlayer(
     }
 
     private fun fetchSponsorBlockSegments() {
-        if (!Prefs.sponsorBlockEnabled) return
+        if (!sponsorBlockSettings.enabled) return
         scope.launch {
             runCatching {
                 segments = sponsorBlockClient.getSkipSegments(currentBvId, currentCid.toString())
@@ -179,7 +182,7 @@ class ExoMediaPlayer(
     }
 
     private fun checkSponsorBlock() {
-        if (!Prefs.sponsorBlockEnabled) return
+        if (!sponsorBlockSettings.enabled) return
         if (segments.isEmpty()) return
 
         val position = currentPosition
@@ -187,10 +190,10 @@ class ExoMediaPlayer(
             position >= it.segment[0] * 1000 && position < it.segment[1] * 1000
         }
 
-        if (segment != null && Prefs.sponsorBlockCategories.contains(segment.category)) {
-            if (Prefs.sponsorBlockAutoSkip) {
+        if (segment != null && sponsorBlockSettings.categories.contains(segment.category)) {
+            if (sponsorBlockSettings.autoSkip) {
                 seekTo((segment.segment[1] * 1000).toLong())
-                if (Prefs.sponsorBlockSkippedToast) {
+                if (sponsorBlockSettings.showToast) {
                     mPlayerEventListener?.onShowToast("已为您跳过 ${segment.category} 片段")
                 }
             }
@@ -200,6 +203,12 @@ class ExoMediaPlayer(
     override fun onIsPlayingChanged(isPlaying: Boolean) {
         if (isPlaying) {
             mPlayerEventListener?.onPlay()
+            scope.launch {
+                while (mPlayer?.isPlaying == true) {
+                    checkSponsorBlock()
+                    delay(500)
+                }
+            }
         } else {
             mPlayerEventListener?.onPause()
         }
