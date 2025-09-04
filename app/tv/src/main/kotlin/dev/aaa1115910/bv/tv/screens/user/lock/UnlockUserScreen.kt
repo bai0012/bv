@@ -36,7 +36,7 @@ import androidx.tv.material3.MaterialTheme
 import androidx.tv.material3.Surface
 import androidx.tv.material3.Text
 import dev.aaa1115910.bv.R
-import dev.aaa1115910.bv.util.ifElse
+import dev.aaa1115910.bv.util.runIf
 import dev.aaa1115910.bv.entity.db.UserDB
 import dev.aaa1115910.bv.tv.screens.user.UserItem
 import dev.aaa1115910.bv.util.toast
@@ -128,7 +128,7 @@ private fun UnlockUserContent(
 
     Surface(
         modifier = modifier
-            .ifElse({ unlockState == UnlockState.InputPassword }, Modifier.clickable {})
+            .runIf(unlockState == UnlockState.InputPassword) { clickable {} }
             .focusRequester(inputFocusRequester)
             .onPreviewKeyEvent {
                 when (unlockState) {
@@ -191,7 +191,7 @@ private fun UnlockUserContent(
                 items(items = userList) { user ->
                     UserItem(
                         modifier = Modifier
-                            .ifElse({ user != selectedUser }, Modifier.alpha(unChosenUserAlpha)),
+                            .runIf(user != selectedUser) { alpha(unChosenUserAlpha) },
                         avatar = user.avatar,
                         username = user.username,
                         lockEnabled = user.lock.isNotBlank(),

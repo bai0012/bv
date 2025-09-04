@@ -37,7 +37,7 @@ import dev.aaa1115910.bv.player.tv.controller.MenuFocusState
 import dev.aaa1115910.bv.player.tv.controller.playermenu.component.MenuListItem
 import dev.aaa1115910.bv.player.tv.controller.playermenu.component.RadioMenuList
 import dev.aaa1115910.bv.player.tv.controller.playermenu.component.StepLessMenuItem
-import dev.aaa1115910.bv.util.ifElse
+import dev.aaa1115910.bv.util.runIf
 import java.text.NumberFormat
 
 @Composable
@@ -136,10 +136,9 @@ fun ClosedCaptionMenuList(
             itemsIndexed(VideoPlayerClosedCaptionMenuItem.entries) { index, item ->
                 MenuListItem(
                     modifier = Modifier
-                        .ifElse(
-                            index == 0,
-                            Modifier.focusRequester(parentMenuPositionFocusRequester)
-                        ),
+                        .runIf(index == 0) {
+                            focusRequester(parentMenuPositionFocusRequester)
+                        },
                     text = item.getDisplayName(context),
                     selected = selectedClosedCaptionMenuItem == item,
                     onClick = {},

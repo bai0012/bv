@@ -61,7 +61,7 @@ import dev.aaa1115910.bv.R
 import dev.aaa1115910.bv.tv.component.TvAlertDialog
 import dev.aaa1115910.bv.ui.theme.BVTheme
 import dev.aaa1115910.bv.util.getDisplayName
-import dev.aaa1115910.bv.util.ifElse
+import dev.aaa1115910.bv.util.runIf
 
 @Composable
 fun IndexFilter(
@@ -297,10 +297,9 @@ private fun <T> IndexFilterChipRow(
             items(items = filters) { filter ->
                 IndexFilterChip(
                     modifier = Modifier
-                        .ifElse(
-                            selectedFilter == filter,
-                            Modifier.focusRequester(focusRequester)
-                        ),
+                        .runIf(selectedFilter == filter) {
+                            focusRequester(focusRequester)
+                        },
                     selected = selectedFilter == filter,
                     onClick = { onFilterChange(filter) },
                     label = (filter as PgcIndexParam).getDisplayName(context)

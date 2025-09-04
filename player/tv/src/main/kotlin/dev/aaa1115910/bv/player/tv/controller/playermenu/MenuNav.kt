@@ -14,7 +14,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import dev.aaa1115910.bv.player.entity.VideoPlayerMenuNavItem
 import dev.aaa1115910.bv.player.tv.controller.playermenu.component.MenuListItem
-import dev.aaa1115910.bv.util.ifElse
+import dev.aaa1115910.bv.util.runIf
 
 @Composable
 fun MenuNavList(
@@ -35,7 +35,7 @@ fun MenuNavList(
         itemsIndexed(VideoPlayerMenuNavItem.entries) { index, item ->
             MenuListItem(
                 modifier = Modifier
-                    .ifElse(index == 0, Modifier.focusRequester(focusRequester)),
+                    .runIf(index == 0) { focusRequester(focusRequester) },
                 text = item.getDisplayName(context),
                 icon = item.icon,
                 expanded = isFocusing,

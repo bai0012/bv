@@ -23,7 +23,7 @@ import dev.aaa1115910.biliapi.entity.ugc.UgcTypeV2
 import dev.aaa1115910.bv.ui.theme.BVTheme
 import dev.aaa1115910.bv.util.fInfo
 import dev.aaa1115910.bv.util.getDisplayName
-import dev.aaa1115910.bv.util.ifElse
+import dev.aaa1115910.bv.util.runIf
 import dev.aaa1115910.bv.util.toast
 import io.github.oshai.kotlinlogging.KotlinLogging
 
@@ -66,7 +66,7 @@ fun UgcChildRegionButtonsContent(
     ) {
         itemsIndexed(items = childUgcTypes) { index, ugcType ->
             SuggestionChip(
-                modifier = Modifier.ifElse(index == 0, Modifier.focusRequester(focusRequester)),
+                modifier = Modifier.runIf(index == 0) { focusRequester(focusRequester) },
                 onClick = { onClickChildRegion(ugcType) }
             ) {
                 Text(text = ugcType.getDisplayName(context))

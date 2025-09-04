@@ -32,7 +32,7 @@ import androidx.tv.material3.ButtonDefaults
 import androidx.tv.material3.MaterialTheme
 import androidx.tv.material3.Text
 import dev.aaa1115910.bv.entity.carddata.VideoCardData
-import dev.aaa1115910.bv.util.ifElse
+import dev.aaa1115910.bv.util.runIf
 
 @Composable
 fun VideosRow(
@@ -81,7 +81,7 @@ fun VideosRow(
                 SmallVideoCard(
                     modifier = Modifier
                         .width(200.dp)
-                        .ifElse(index == 0, Modifier.focusRequester(focusRequester)),
+                        .runIf(index == 0) { focusRequester(focusRequester) },
                     data = videoData,
                     onClick = {
                         if (videoData.jumpToSeason) {

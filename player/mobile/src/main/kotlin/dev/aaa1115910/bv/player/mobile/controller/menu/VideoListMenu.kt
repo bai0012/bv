@@ -38,7 +38,7 @@ import dev.aaa1115910.bv.player.entity.VideoListUgcEpisode
 import dev.aaa1115910.bv.player.entity.VideoListUgcEpisodeTitle
 import dev.aaa1115910.bv.player.entity.VideoPlayerConfigData
 import dev.aaa1115910.bv.player.mobile.MaterialDarkTheme
-import dev.aaa1115910.bv.util.ifElse
+import dev.aaa1115910.bv.util.runIf
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -115,7 +115,7 @@ private fun VideoListItem(
         modifier = modifier
             .fillMaxWidth()
             .clip(MaterialTheme.shapes.small)
-            .ifElse({ item !is VideoListUgcEpisodeTitle }, Modifier.clickable { onClick(item) }),
+            .runIf(item !is VideoListUgcEpisodeTitle) { clickable { onClick(item) } },
         color = if (selected) MaterialTheme.colorScheme.primaryContainer else Color.Transparent,
         contentColor = if (selected) contentColorFor(MaterialTheme.colorScheme.primaryContainer)
         else Color.White.copy(alpha = 0.9f)

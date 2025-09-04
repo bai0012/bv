@@ -44,7 +44,7 @@ import androidx.tv.material3.Text
 import androidx.tv.material3.rememberDrawerState
 import coil.compose.AsyncImage
 import dev.aaa1115910.bv.ui.theme.BVTheme
-import dev.aaa1115910.bv.util.ifElse
+import dev.aaa1115910.bv.util.runIf
 import dev.aaa1115910.bv.util.isDpadRight
 import dev.aaa1115910.bv.util.isKeyDown
 import kotlinx.coroutines.delay
@@ -149,10 +149,9 @@ fun NavigationDrawerScope.DrawerContent(
                     NavigationDrawerItem(
                         modifier = Modifier
                             .onFocusChanged { if (it.hasFocus) selectedItem = item }
-                            .ifElse(
-                                item == DrawerItem.Home,
-                                Modifier.focusRequester(centerFocusRequester)
-                            ),
+                            .runIf(item == DrawerItem.Home) {
+                                focusRequester(centerFocusRequester)
+                            },
                         onClick = { selectedItem = item },
                         selected = selectedItem == item,
                         leadingContent = {

@@ -29,7 +29,7 @@ import dev.aaa1115910.biliapi.entity.season.FollowingSeasonType
 import dev.aaa1115910.bv.R
 import dev.aaa1115910.bv.tv.component.TvAlertDialog
 import dev.aaa1115910.bv.util.getDisplayName
-import dev.aaa1115910.bv.util.ifElse
+import dev.aaa1115910.bv.util.runIf
 
 @Composable
 fun FollowingSeasonFilter(
@@ -65,10 +65,9 @@ fun FollowingSeasonFilter(
                         items(items = FollowingSeasonType.entries) { type ->
                             FilterDialogFilterChip(
                                 modifier = Modifier
-                                    .ifElse(
-                                        type == selectedType,
-                                        Modifier.focusRequester(row1FocusRequester)
-                                    ),
+                                    .runIf(type == selectedType) {
+                                        focusRequester(row1FocusRequester)
+                                    },
                                 selected = type == selectedType,
                                 onClick = { onSelectedTypeChange(type) },
                                 label = { Text(text = type.getDisplayName(context)) },
@@ -84,10 +83,9 @@ fun FollowingSeasonFilter(
                         items(items = FollowingSeasonStatus.entries) { status ->
                             FilterDialogFilterChip(
                                 modifier = Modifier
-                                    .ifElse(
-                                        status == selectedStatus,
-                                        Modifier.focusRequester(row2FocusRequester)
-                                    ),
+                                    .runIf(status == selectedStatus) {
+                                        focusRequester(row2FocusRequester)
+                                    },
                                 selected = status == selectedStatus,
                                 onClick = { onSelectedStatusChange(status) },
                                 label = { Text(text = status.getDisplayName(context)) }

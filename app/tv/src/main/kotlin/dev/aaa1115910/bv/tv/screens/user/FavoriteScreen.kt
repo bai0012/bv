@@ -44,7 +44,7 @@ import dev.aaa1115910.biliapi.entity.FavoriteFolderMetadata
 import dev.aaa1115910.bv.R
 import dev.aaa1115910.bv.tv.component.videocard.SmallVideoCard
 import dev.aaa1115910.bv.tv.activities.video.VideoInfoActivity
-import dev.aaa1115910.bv.util.ifElse
+import dev.aaa1115910.bv.util.runIf
 import dev.aaa1115910.bv.viewmodel.user.FavoriteViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -139,7 +139,7 @@ fun FavoriteScreen(
                     favoriteViewModel.favoriteFolderMetadataList.forEachIndexed { index, folderMetadata ->
                         Tab(
                             modifier = Modifier
-                                .ifElse(index == 0, Modifier.focusRequester(focusRequester)),
+                                .runIf(index == 0) { focusRequester(focusRequester) },
                             selected = currentTabIndex == index,
                             onFocus = {
                                 if (favoriteViewModel.currentFavoriteFolderMetadata != folderMetadata) {

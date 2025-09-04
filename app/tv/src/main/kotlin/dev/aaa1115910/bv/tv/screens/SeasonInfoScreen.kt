@@ -104,7 +104,7 @@ import dev.aaa1115910.bv.ui.theme.BVTheme
 import dev.aaa1115910.bv.util.ImageSize
 import dev.aaa1115910.bv.util.fInfo
 import dev.aaa1115910.bv.util.focusedScale
-import dev.aaa1115910.bv.util.ifElse
+import dev.aaa1115910.bv.util.runIf
 import dev.aaa1115910.bv.util.onBackPressed
 import dev.aaa1115910.bv.util.requestFocus
 import dev.aaa1115910.bv.util.resizedImageUrl
@@ -866,7 +866,7 @@ fun SeasonEpisodeRow(
                 val episodeTitle by remember { mutableStateOf(if (episode.longTitle != "") episode.longTitle else episode.title) }
                 SeasonEpisodeButton(
                     modifier = Modifier
-                        .ifElse(index == 0, Modifier.focusRequester(focusRequester)),
+                        .runIf(index == 0) { focusRequester(focusRequester) },
                     partTitle = if (title == "正片") {
                         //如果 title 是数字的话，就会返回 "第 x 集"
                         //如果 title 不是数字的话（例如 SP），就会原样使用 title
@@ -1054,14 +1054,12 @@ private fun SeasonSelectorContent(
                                 .onFocusChanged {
                                     if (it.hasFocus) currentSeasonIndex = index
                                 }
-                                .ifElse(
-                                    season.seasonId == currentSeasonId,
-                                    Modifier.focusRequester(currentSeasonFocusRequester)
-                                )
-                                .ifElse(
-                                    season.seasonId == currentSeasonId,
-                                    Modifier.bringIntoViewRequester(bringIntoViewRequester)
-                                ),
+                                .runIf(season.seasonId == currentSeasonId) {
+                                    focusRequester(currentSeasonFocusRequester)
+                                }
+                                .runIf(season.seasonId == currentSeasonId) {
+                                    bringIntoViewRequester(bringIntoViewRequester)
+                                },
                             glow = CardDefaults.glow(
                                 focusedGlow = Glow(
                                     elevationColor = MaterialTheme.colorScheme.inverseSurface,

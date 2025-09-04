@@ -141,7 +141,6 @@ fun VideoPlayerController(
             .background(Color.Black)
             .onFocusChanged { hasFocus = it.hasFocus }
             .focusable()
-            //.ifElse(hasFocus, Modifier.border(2.dp, Color.Yellow))
             .onPreviewKeyEvent {
 
                 if (showClickableControllers) {

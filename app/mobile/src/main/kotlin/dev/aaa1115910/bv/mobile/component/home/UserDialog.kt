@@ -62,7 +62,7 @@ import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import dev.aaa1115910.bv.entity.db.UserDB
 import dev.aaa1115910.bv.mobile.theme.BVMobileTheme
-import dev.aaa1115910.bv.util.ifElse
+import dev.aaa1115910.bv.util.runIf
 
 @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
 @Composable
@@ -97,10 +97,9 @@ fun UserDialog(
             UserDialogContent(
                 modifier = Modifier
                     .padding(horizontal = 16.dp, vertical = 80.dp)
-                    .ifElse(
-                        { windowWidthSizeClass != WindowWidthSizeClass.Compact },
-                        Modifier.width(500.dp)
-                    )
+                    .runIf(windowWidthSizeClass != WindowWidthSizeClass.Compact) {
+                        width(500.dp)
+                    }
                     .clip(MaterialTheme.shapes.extraLarge)
                     .align(Alignment.TopCenter),
                 currentUser = currentUser,

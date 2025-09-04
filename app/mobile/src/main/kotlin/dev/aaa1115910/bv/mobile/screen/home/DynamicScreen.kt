@@ -39,7 +39,7 @@ import dev.aaa1115910.bv.mobile.component.home.dynamic.DynamicItem
 import dev.aaa1115910.bv.util.OnBottomReached
 import dev.aaa1115910.bv.util.fInfo
 import dev.aaa1115910.bv.util.getLane
-import dev.aaa1115910.bv.util.ifElse
+import dev.aaa1115910.bv.util.runIf
 import dev.aaa1115910.bv.util.toast
 import dev.aaa1115910.bv.viewmodel.home.DynamicViewModel
 import io.github.oshai.kotlinlogging.KotlinLogging
@@ -124,10 +124,9 @@ fun DynamicScreen(
             LazyVerticalStaggeredGrid(
                 modifier = modifier
                     .fillMaxSize()
-                    .ifElse(
-                        { windowSize != WindowWidthSizeClass.Compact },
-                        Modifier.clip(MaterialTheme.shapes.large)
-                    )
+                    .runIf(windowSize != WindowWidthSizeClass.Compact) {
+                        clip(MaterialTheme.shapes.large)
+                    }
                     .background(MaterialTheme.colorScheme.surface),
                 columns = StaggeredGridCells.Adaptive(300.dp),
                 state = dynamicGridState,
@@ -138,7 +137,7 @@ fun DynamicScreen(
                 items(items = dynamicViewModel.dynamicAllList) { dynamicItem ->
                     DynamicItem(
                         modifier = Modifier
-                            .ifElse(lane != 1, Modifier.clip(MaterialTheme.shapes.medium)),
+                            .runIf(lane != 1) { clip(MaterialTheme.shapes.medium) },
                         dynamicItem = dynamicItem,
                         previewerState = previewerState,
                         onShowPreviewer = onShowPreviewer,

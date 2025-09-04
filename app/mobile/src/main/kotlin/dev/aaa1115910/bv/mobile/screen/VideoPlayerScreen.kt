@@ -113,7 +113,7 @@ import dev.aaa1115910.bv.player.mobile.BvPlayer
 import dev.aaa1115910.bv.util.Prefs
 import dev.aaa1115910.bv.util.fInfo
 import dev.aaa1115910.bv.util.formatPubTimeString
-import dev.aaa1115910.bv.util.ifElse
+import dev.aaa1115910.bv.util.runIf
 import dev.aaa1115910.bv.util.swapList
 import dev.aaa1115910.bv.viewmodel.CommentViewModel
 import dev.aaa1115910.bv.viewmodel.SeasonViewModel
@@ -208,10 +208,9 @@ fun VideoPlayerScreen(
     ) { innerPadding ->
         Row(
             modifier = Modifier
-                .ifElse(
-                    !isVideoFullscreen,
-                    Modifier.padding(top = innerPadding.calculateTopPadding())
-                )
+                .runIf(!isVideoFullscreen) {
+                    padding(top = innerPadding.calculateTopPadding())
+                }
             //.padding(top = innerPadding.calculateTopPadding())
         ) {
             val leftPartWidth by animateFloatAsState(
@@ -286,12 +285,10 @@ fun VideoPlayerScreen(
                                 .fillMaxSize()
                                 .zIndex(1f)
                             else Modifier
-                                .ifElse(
-                                    { windowSizeClass.widthSizeClass == WindowWidthSizeClass.Expanded },
-                                    Modifier
-                                        .padding(12.dp, 0.dp, 12.dp, 12.dp)
+                                .runIf(windowSizeClass.widthSizeClass == WindowWidthSizeClass.Expanded) {
+                                    padding(12.dp, 0.dp, 12.dp, 12.dp)
                                         .clip(MaterialTheme.shapes.large)
-                                )
+                                }
                                 .fillMaxWidth()
                                 .aspectRatio(16f / 9f),
                             isFullScreen = isVideoFullscreen,
@@ -596,27 +593,25 @@ fun VideoPlayerScreen(
                         ) { index, relatedVideo ->
                             RelatedVideoItem(
                                 modifier = Modifier
-                                    .ifElse(
-                                        { index == 0 },
-                                        Modifier.clip(
+                                        .runIf(index == 0) {
+                                            clip(
                                             MaterialTheme.shapes.large.copy(
                                                 bottomStart = CornerSize(0.dp),
                                                 bottomEnd = CornerSize(0.dp)
                                             )
                                         )
-                                    )
-                                    .ifElse(
-                                        {
+                                        }
+                                        .runIf(
                                             index == (videoDetailViewModel.videoDetail?.relatedVideos?.size
                                                 ?: 0) - 1
-                                        },
-                                        Modifier.clip(
+                                        ) {
+                                            clip(
                                             MaterialTheme.shapes.large.copy(
-                                                topStart = CornerSize(0.dp),
+                                                    topStart = CornerSize(0.dp),
                                                 topEnd = CornerSize(0.dp)
                                             )
                                         )
-                                    ),
+                                        },
                                 relatedVideo = relatedVideo,
                                 onClick = {
                                     VideoPlayerActivity.actionStart(

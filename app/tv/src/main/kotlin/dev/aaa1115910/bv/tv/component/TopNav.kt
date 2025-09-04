@@ -35,7 +35,7 @@ import dev.aaa1115910.biliapi.entity.pgc.PgcType
 import dev.aaa1115910.biliapi.entity.ugc.UgcTypeV2
 import dev.aaa1115910.bv.BVApp
 import dev.aaa1115910.bv.util.getDisplayName
-import dev.aaa1115910.bv.util.ifElse
+import dev.aaa1115910.bv.util.runIf
 import dev.aaa1115910.bv.util.isKeyDown
 import kotlinx.coroutines.delay
 
@@ -84,7 +84,7 @@ fun TopNav(
             items.forEachIndexed { index, tab ->
                 NavItemTab(
                     modifier = Modifier
-                        .ifElse(index == 0, Modifier.focusRequester(focusRequester)),
+                        .runIf(index == 0) { focusRequester(focusRequester) },
                     topNavItem = tab,
                     selected = index == selectedTabIndex,
                     onFocus = {

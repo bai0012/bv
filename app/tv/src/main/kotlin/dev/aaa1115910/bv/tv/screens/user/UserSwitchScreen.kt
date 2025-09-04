@@ -74,7 +74,7 @@ import dev.aaa1115910.bv.tv.activities.user.UserLockSettingsActivity
 import dev.aaa1115910.bv.tv.component.TvAlertDialog
 import dev.aaa1115910.bv.tv.screens.user.lock.UnlockSwitchUserContent
 import dev.aaa1115910.bv.ui.theme.BVTheme
-import dev.aaa1115910.bv.util.ifElse
+import dev.aaa1115910.bv.util.runIf
 import dev.aaa1115910.bv.util.requestFocus
 import dev.aaa1115910.bv.viewmodel.UserSwitchViewModel
 import kotlinx.coroutines.Dispatchers
@@ -367,10 +367,9 @@ fun UserMenuDialog(
                     item {
                         UserMenuButton(
                             modifier = Modifier
-                                .ifElse(
-                                    !showTokenButton,
-                                    Modifier.focusRequester(menuFocusRequester)
-                                ),
+                                .runIf(!showTokenButton) {
+                                    focusRequester(menuFocusRequester)
+                                },
                             text = stringResource(R.string.user_switch_menu_user_lock),
                             onClick = {
                                 onHideDialog()

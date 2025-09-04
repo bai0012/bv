@@ -137,7 +137,7 @@ import dev.aaa1115910.bv.util.fInfo
 import dev.aaa1115910.bv.util.fWarn
 import dev.aaa1115910.bv.util.focusedBorder
 import dev.aaa1115910.bv.util.formatPubTimeString
-import dev.aaa1115910.bv.util.ifElse
+import dev.aaa1115910.bv.util.runIf
 import dev.aaa1115910.bv.util.onBackPressed
 import dev.aaa1115910.bv.util.requestFocus
 import dev.aaa1115910.bv.util.swapList
@@ -1189,7 +1189,7 @@ fun VideoPartRow(
 
     Column(
         modifier = modifier
-            .ifElse(!nested, Modifier.padding(start = 50.dp))
+            .runIf(!nested) { padding(start = 50.dp) }
             .onFocusChanged { hasFocus = it.hasFocus },
         verticalArrangement = Arrangement.SpaceBetween
     ) {
@@ -1219,7 +1219,7 @@ fun VideoPartRow(
             itemsIndexed(items = pages, key = { _, page -> page.cid }) { index, page ->
                 VideoPartButton(
                     modifier = Modifier
-                        .ifElse(index == 0, Modifier.focusRequester(focusRequester)),
+                        .runIf(index == 0) { focusRequester(focusRequester) },
                     index = index + 1,
                     title = page.title,
                     played = if (page.cid == lastPlayedCid) lastPlayedTime else 0,
@@ -1289,7 +1289,7 @@ fun VideoUgcSeasonRow(
             itemsIndexed(items = episodes) { index, episode ->
                 VideoPartButton(
                     modifier = Modifier
-                        .ifElse(index == 0, Modifier.focusRequester(focusRequester))
+                        .runIf(index == 0) { focusRequester(focusRequester) }
                         .onFocusChanged { if (it.hasFocus) focusingEpisode = episode },
                     index = index + 1,
                     title = episode.title,

@@ -17,7 +17,7 @@ import androidx.compose.ui.input.key.key
 import androidx.compose.ui.input.key.onPreviewKeyEvent
 import androidx.compose.ui.input.key.type
 import androidx.compose.ui.unit.dp
-import dev.aaa1115910.bv.util.ifElse
+import dev.aaa1115910.bv.util.runIf
 
 @Composable
 fun CheckBoxMenuList(
@@ -50,7 +50,7 @@ fun CheckBoxMenuList(
             MenuListItem(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .ifElse(index == 0, Modifier.focusRequester(focusRequester)),
+                    .runIf(index == 0) { focusRequester(focusRequester) },
                 text = item,
                 selected = selected.contains(index),
                 onClick = {

@@ -65,7 +65,7 @@ import dev.aaa1115910.bv.player.util.danmakuMask
 import dev.aaa1115910.bv.util.countDownTimer
 import dev.aaa1115910.bv.util.fInfo
 import dev.aaa1115910.bv.util.formatHourMinSec
-import dev.aaa1115910.bv.util.ifElse
+import dev.aaa1115910.bv.util.runIf
 import dev.aaa1115910.bv.util.timeTask
 import io.github.oshai.kotlinlogging.KotlinLogging
 import kotlinx.coroutines.Dispatchers
@@ -650,10 +650,9 @@ fun BvPlayer(
                     .fillMaxHeight(videoPlayerConfigData.currentDanmakuArea)
                     .fillMaxHeight()
                     .alpha(videoPlayerConfigData.currentDanmakuOpacity)
-                    .ifElse(
-                        { videoPlayerConfigData.currentDanmakuMask },
-                        Modifier.danmakuMask(currentDanmakuMaskFrame)
-                    ),
+                    .runIf(videoPlayerConfigData.currentDanmakuMask) {
+                        danmakuMask(currentDanmakuMaskFrame)
+                    },
                 danmakuPlayer = mDanmakuPlayer
             )
 

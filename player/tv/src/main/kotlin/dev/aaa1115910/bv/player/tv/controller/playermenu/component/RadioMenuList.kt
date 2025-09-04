@@ -17,7 +17,7 @@ import androidx.compose.ui.input.key.key
 import androidx.compose.ui.input.key.onPreviewKeyEvent
 import androidx.compose.ui.input.key.type
 import androidx.compose.ui.unit.dp
-import dev.aaa1115910.bv.util.ifElse
+import dev.aaa1115910.bv.util.runIf
 
 @Composable
 fun RadioMenuList(
@@ -50,7 +50,7 @@ fun RadioMenuList(
             MenuListItem(
                 modifier = Modifier
                     .width(200.dp)
-                    .ifElse(selected == index, Modifier.focusRequester(focusRequester)),
+                    .runIf(selected == index) { focusRequester(focusRequester) },
                 text = item,
                 selected = selected == index,
                 onClick = {
