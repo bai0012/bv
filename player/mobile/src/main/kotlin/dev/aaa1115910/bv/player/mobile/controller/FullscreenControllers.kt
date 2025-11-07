@@ -56,6 +56,9 @@ import dev.aaa1115910.symbols.SubtitlesGear
 import dev.aaa1115910.symbols.SubtitlesOff
 import me.ks.chan.material.symbols.MaterialSymbols
 
+import dev.aaa1115910.bv.viewmodel.VideoPlayerV3ViewModel
+import org.koin.androidx.compose.koinViewModel
+
 @Composable
 fun FullscreenControllers(
     modifier: Modifier = Modifier,
@@ -71,6 +74,7 @@ fun FullscreenControllers(
     onOpenMoreMenu: () -> Unit
 ) {
     val context = LocalContext.current
+    val playerViewModel: VideoPlayerV3ViewModel = koinViewModel()
     val videoPlayerSeekData = LocalVideoPlayerSeekData.current
     val videoPlayerStateData = LocalVideoPlayerStateData.current
     val videoPlayerConfigData = LocalVideoPlayerConfigData.current
@@ -156,6 +160,16 @@ private fun TopControllers(
                     Icon(imageVector = Icons.Rounded.ClosedCaption, contentDescription = null)
                 }
                 IconButton(
+                    onClick = {
+                        playerViewModel.manualSkipSegment(videoPlayerSeekData.position)
+                    },
+                    colors = IconButtonDefaults.iconButtonColors(
+                        contentColor = Color.White
+                    )
+                ) {
+                    Text(text = "Skip")
+                }
+                IconButton(
                     onClick = onOpenMoreMenu,
                     colors = IconButtonDefaults.iconButtonColors(
                         contentColor = Color.White
@@ -201,7 +215,8 @@ private fun BottomControllers(
                 playing = isPlaying,
                 onPositionChange = { newPosition, isPressing ->
                     if (!isPressing) onSeekToPosition(newPosition)
-                }
+                },
+                sponsorSegments = playerViewModel.sponsorSegments
             )
 
             ProvideTextStyle(TextStyle(color = Color.White)) {

@@ -35,6 +35,9 @@ import kotlin.math.max
 import kotlin.math.sin
 
 @Composable
+import dev.aaa1115910.biliapi.entity.sponsor.Segment
+
+@Composable
 fun SeekBar(
     modifier: Modifier = Modifier,
     duration: Long,
@@ -43,6 +46,7 @@ fun SeekBar(
     waving: Boolean = true,
     showThumb: Boolean = true,
     colors: SliderColors = SliderDefaults.colors(),
+    sponsorSegments: List<Segment> = emptyList()
 ) {
     val trackWidth = 10f
 
@@ -144,6 +148,33 @@ fun SeekBar(
                     prevShadowX = x.toFloat()
                     prevShadowY = shadowY
                 }
+            }
+
+            // draw sponsor segments
+            sponsorSegments.forEach { segment ->
+                val segmentStart = segment.segment[0]
+                val segmentEnd = segment.segment[1]
+                val segmentStartX = size.width * (segmentStart / duration)
+                val segmentEndX = size.width * (segmentEnd / duration)
+                val segmentColor = when (segment.category) {
+                    "sponsor" -> Color.Green
+                    "poi_highlight" -> Color.Yellow
+                    "interaction" -> Color.Blue
+                    "intro" -> Color.Cyan
+                    "outro" -> Color.Magenta
+                    "music_offtopic" -> Color.Red
+                    "preview" -> Color.White
+                    "filler" -> Color.Gray
+                    else -> Color.Transparent
+                }
+                drawRect(
+                    color = segmentColor,
+                    topLeft = Offset(segmentStartX, center.y - trackWidth / 2),
+                    size = androidx.compose.ui.geometry.Size(
+                        segmentEndX - segmentStartX,
+                        trackWidth
+                    )
+                )
             }
 
             // animated wave line

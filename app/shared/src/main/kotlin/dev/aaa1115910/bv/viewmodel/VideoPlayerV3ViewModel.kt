@@ -26,6 +26,8 @@ import dev.aaa1115910.biliapi.entity.video.SubtitleType
 import dev.aaa1115910.biliapi.entity.video.VideoShot
 import dev.aaa1115910.biliapi.http.BiliHttpApi
 import dev.aaa1115910.biliapi.repositories.VideoPlayRepository
+import dev.aaa1115910.biliapi.entity.sponsor.Segment
+import dev.aaa1115910.biliapi.repositories.SponsorRepository
 import dev.aaa1115910.bilisubtitle.SubtitleParser
 import dev.aaa1115910.bilisubtitle.entity.SubtitleItem
 import dev.aaa1115910.bv.BVApp
@@ -61,6 +63,7 @@ import java.net.URI
 class VideoPlayerV3ViewModel(
     private val videoInfoRepository: VideoInfoRepository,
     private val videoPlayRepository: VideoPlayRepository,
+    private val sponsorRepository: SponsorRepository
 ) : ViewModel() {
     private val logger = KotlinLogging.logger { }
 
@@ -75,6 +78,7 @@ class VideoPlayerV3ViewModel(
     var danmakuData = mutableStateListOf<DanmakuItemData>()
     val danmakuMasks = mutableStateListOf<DanmakuMaskSegment>()
     var videoShot: VideoShot? by mutableStateOf(null)
+    var sponsorSegments = mutableStateListOf<Segment>()
 
     var availableQuality = mutableStateListOf<Resolution>()
     var availableVideoCodec = mutableStateListOf<VideoCodec>()
@@ -172,6 +176,8 @@ class VideoPlayerV3ViewModel(
             updateDanmakuMask()
 
             updateVideoShot()
+
+            loadSponsorBlockSegments()
 
             //如果是继续播放下一集，且之前开启了字幕，就会自动加载第一条字幕，主要用于观看番剧时自动加载字幕
             if (continuePlayNext) {
@@ -626,6 +632,38 @@ class VideoPlayerV3ViewModel(
             logger.fInfo { "Load video shot success" }
         }.onFailure {
             logger.fWarn { "Load video shot failed: ${it.stackTraceToString()}" }
+        }
+    }
+
+    private suspend fun loadSponsorBlockSegments() {
+        runCatching {
+            val segments = sponsorRepository.getSkipSegments(
+                bvId = "av$currentAid",
+                cid = currentCid
+            )
+            sponsorSegments.swapListWithMainContext(segments)
+            logger.fInfo { "Load sponsor block segments size: ${segments.size}" }
+        }.onFailure {
+            logger.fWarn { "Load sponsor block segments failed: ${it.stackTraceToString()}" }
+        }
+    }
+
+    fun autoSkipSegment(position: Long) {
+        val segment = sponsorSegments.find {
+            position in it.segment[0].toLong() * 1000..it.segment[1].toLong() * 1000 &&
+                    Prefs.sponsorBlockEnabledCategories.contains(it.category)
+        }
+        if (segment != null) {
+            videoPlayer?.seekTo(segment.segment[1].toLong() * 1000)
+        }
+    }
+
+    fun manualSkipSegment(position: Long) {
+        val segment = sponsorSegments.find {
+            position in it.segment[0].toLong() * 1000..it.segment[1].toLong() * 1000
+        }
+        if (segment != null) {
+            videoPlayer?.seekTo(segment.segment[1].toLong() * 1000)
         }
     }
 

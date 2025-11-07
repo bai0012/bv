@@ -53,7 +53,9 @@ import dev.aaa1115910.bv.util.countDownTimer
 import io.github.oshai.kotlinlogging.KotlinLogging
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
+import dev.aaa1115910.bv.viewmodel.VideoPlayerV3ViewModel
 import kotlinx.coroutines.withContext
+import org.koin.androidx.compose.koinViewModel
 import java.util.Calendar
 
 @Composable
@@ -80,6 +82,7 @@ fun BvPlayer(
     danmakuPlayer: DanmakuPlayer?
 ) {
     val logger = KotlinLogging.logger("BvPlayer")
+    val playerViewModel: VideoPlayerV3ViewModel = koinViewModel()
     // 直接调用 danmakuPlayer 会始终为 null
     var mDanmakuPlayer: DanmakuPlayer? by remember { mutableStateOf(null) }
 
@@ -262,6 +265,7 @@ fun BvPlayer(
     LaunchedEffect(Unit) {
         while (true) {
             updatePosition()
+            playerViewModel.autoSkipSegment(currentPosition)
             delay(200)
         }
     }
