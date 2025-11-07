@@ -319,6 +319,15 @@ object Prefs {
             PlayMode.entries[dsm.getPreferenceFlow(PrefKeys.prefPlayModeRequest).first()]
         }
         set(value) = runBlocking { dsm.editPreference(PrefKeys.prefPlayModeKey, value.ordinal) }
+
+    var sponsorBlockEnabledCategories: List<String>
+        get() = runBlocking {
+            dsm.getPreferenceFlow(PrefKeys.prefSponsorBlockEnabledCategoriesRequest).first()
+                .split(",")
+        }
+        set(value) = runBlocking {
+            dsm.editPreference(PrefKeys.prefSponsorBlockEnabledCategoriesKey, value.joinToString(","))
+        }
 }
 
 object PrefKeys {
@@ -365,6 +374,7 @@ object PrefKeys {
     val prefBlacklistUserKey = booleanPreferencesKey("blacklist_user")
     val prefThemeTypeKey = intPreferencesKey("theme_type")
     val prefPlayModeKey = intPreferencesKey("play_mode")
+    val prefSponsorBlockEnabledCategoriesKey = stringPreferencesKey("sbec")
 
     val prefIsLoginRequest = PreferenceRequest(prefIsLoginKey, false)
     val prefUidRequest = PreferenceRequest(prefUidKey, 0)
@@ -423,4 +433,8 @@ object PrefKeys {
     val prefBlacklistUserRequest = PreferenceRequest(prefBlacklistUserKey, false)
     val prefThemeTypeRequest = PreferenceRequest(prefThemeTypeKey, ThemeType.Auto.ordinal)
     val prefPlayModeRequest = PreferenceRequest(prefPlayModeKey, PlayMode.Sequential.ordinal)
+    val prefSponsorBlockEnabledCategoriesRequest = PreferenceRequest(
+        prefSponsorBlockEnabledCategoriesKey,
+        "sponsor,poi_highlight,interaction,intro,outro,music_offtopic,preview,filler"
+    )
 }

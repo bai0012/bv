@@ -49,6 +49,9 @@ import kotlinx.coroutines.delay
 import kotlin.math.max
 
 @Composable
+import dev.aaa1115910.biliapi.entity.sponsor.Segment
+
+@Composable
 fun VideoSeekBar(
     modifier: Modifier = Modifier,
     duration: Long,
@@ -57,7 +60,8 @@ fun VideoSeekBar(
     playing: Boolean,
     colors: SliderColors = SliderDefaults.colors(),
     thumb: (@Composable (Modifier, SeekMoveState?) -> Unit)? = null,
-    onPositionChange: ((position: Long, pressing: Boolean) -> Unit)? = null
+    onPositionChange: ((position: Long, pressing: Boolean) -> Unit)? = null,
+    sponsorSegments: List<Segment> = emptyList()
 ) {
     val density = LocalDensity.current
     var sliderWidth by remember { mutableStateOf(0.dp) }
@@ -123,7 +127,8 @@ fun VideoSeekBar(
             bufferedPercentage = bufferedPercentage,
             waving = playing,
             showThumb = thumb == null,
-            colors = colors
+            colors = colors,
+            sponsorSegments = sponsorSegments
         )
         Box(modifier = Modifier.fillMaxWidth()) {
             val thumbModifier = Modifier

@@ -33,6 +33,9 @@ import dev.aaa1115910.bv.player.entity.VideoPlayerStateData
 import dev.aaa1115910.bv.player.mobile.VideoSeekBar
 import dev.aaa1115910.bv.util.formatHourMinSec
 
+import dev.aaa1115910.bv.viewmodel.VideoPlayerV3ViewModel
+import org.koin.androidx.compose.koinViewModel
+
 @Composable
 fun MiniControllers(
     modifier: Modifier = Modifier,
@@ -42,6 +45,7 @@ fun MiniControllers(
     onEnterFullScreen: () -> Unit,
     onSeekToPosition: (Long) -> Unit,
 ) {
+    val playerViewModel: VideoPlayerV3ViewModel = koinViewModel()
     Box(
         modifier = modifier
             .fillMaxSize()
@@ -152,7 +156,8 @@ private fun BottomControllers(
                 playing = videoPlayerStateData.isPlaying,
                 onPositionChange = { newPosition, isPressing ->
                     if (!isPressing) onSeekToPosition(newPosition)
-                }
+                },
+                sponsorSegments = playerViewModel.sponsorSegments
             )
 
             Text(
@@ -178,6 +183,16 @@ private fun BottomControllers(
                     contentDescription = null,
                     tint = Color.White
                 )
+            }
+            IconButton(
+                modifier = Modifier.constrainAs(createRef()) {
+                    top.linkTo(parent.top)
+                    end.to(fullscreenButton.start)
+                    bottom.linkTo(parent.bottom)
+                },
+                onClick = { playerViewModel.manualSkipSegment(videoPlayerSeekData.position) }
+            ) {
+                Text(text = "Skip", color = Color.White)
             }
         }
     }

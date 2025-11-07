@@ -55,6 +55,7 @@ fun SettingsDetails(
         val contentModifier = Modifier.padding(top = innerPadding.calculateTopPadding())
         when (selectedSettings) {
             null, MobileSettings.Play -> PlayContent(modifier = contentModifier)
+            MobileSettings.SponsorBlock -> SponsorBlockSettingsScreen()
             MobileSettings.About -> AboutContent(modifier = contentModifier)
             MobileSettings.Debug -> DebugContent(modifier = contentModifier)
             MobileSettings.Advance -> AdvanceContent(modifier = contentModifier)
